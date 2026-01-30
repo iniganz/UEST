@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bracket Tournament - UEST MLBB CUP 4# | Rise of the Next Champion</title>
+    <meta name="description" content="Bracket tournament UEST MLBB CUP 4# Rise of the Next Champion - Lihat jadwal dan hasil pertandingan">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* Bracket Embed Styles */
+        .bracket-embed-container {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .bracket-embed-container h3 {
+            color: var(--primary-gold);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .bracket-iframe-wrapper {
+            background: #1a1a2e;
+            border-radius: 15px;
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .bracket-iframe-wrapper iframe {
+            width: 100%;
+            min-height: 600px;
+            border: none;
+        }
+
+        .bracket-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .bracket-placeholder i {
+            font-size: 5rem;
+            color: var(--primary-gold);
+            margin-bottom: 25px;
+        }
+
+        .bracket-placeholder h3 {
+            color: var(--text-white);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .bracket-placeholder p {
+            color: var(--text-gray);
+            max-width: 500px;
+            margin-bottom: 25px;
+        }
+
+        .challonge-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-blue);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .challonge-link:hover {
+            color: var(--primary-gold);
+        }
+
+        .bracket-info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .bracket-info-card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .bracket-info-card:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-5px);
+        }
+
+        .bracket-info-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .bracket-info-card h4 {
+            color: var(--primary-gold);
+            margin-bottom: 10px;
+        }
+
+        .bracket-info-card p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-logo">
+                <img src="images/logo.png" alt="Logo" onerror="this.style.display='none'">
+                <h1>UEST MLBB CUP 4#</h1>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="acara.html">Acara</a></li>
+                <li><a href="pendaftaran.html">Pendaftaran</a></li>
+                <li><a href="bracket.html" class="active">Bracket</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="hero" style="min-height: 40vh;">
+        <div class="hero-content">
+            <span class="hero-badge">🏆 Rise of the Next Champion | 32 Tim</span>
+            <h1>Tournament <span class="highlight">Bracket</span></h1>
+            <p class="hero-subtitle">Lihat jadwal dan hasil pertandingan secara real-time</p>
+        </div>
+    </section>
+
+    <!-- Bracket Section -->
+    <section class="section">
+        <div class="container">
+            <!-- Bracket Embed from Challonge -->
+            <div class="bracket-embed-container">
+                <h3><i class="fas fa-sitemap"></i> Bracket Tournament</h3>
+
+                <div class="bracket-iframe-wrapper">
+                    <!-- Challonge Bracket Embed -->
+                    <iframe 
+                        id="challongeFrame"
+                        src="https://challonge.com/id/ehw7jvrx/module" 
+                        width="100%" 
+                        height="500" 
+                        frameborder="0"
+                        scrolling="auto" 
+                        allowtransparency="true">
+                    </iframe>
+                    
+                    <!-- Auto Refresh Info -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--dark-bg); border-top: 1px solid var(--dark-border);">
+                        <span style="color: var(--text-gray); font-size: 0.85rem;">
+                            <i class="fas fa-sync-alt" id="refreshIcon"></i> 
+                            Auto refresh setiap <span id="refreshTimer">60</span> detik
+                        </span>
+                        <button onclick="refreshBracket()" class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.85rem;">
+                            <i class="fas fa-redo"></i> Refresh Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="bracket-info-cards">
+                <div class="bracket-info-card">
+                    <div class="icon">🎮</div>
+                    <h4>Format Tournament</h4>
+                    <p>Single Elimination dengan sistem BO1 untuk babak awal, BO3 untuk semifinal, dan BO5 untuk Grand
+                        Final</p>
+                </div>
+                <div class="bracket-info-card">
+                    <div class="icon">📅</div>
+                    <h4>Jadwal Main</h4>
+                    <p>Babak penyisihan: 15-16 Feb<br>Semi Final: 18 Feb<br>Grand Final: 20 Feb 2026</p>
+                </div>
+                <div class="bracket-info-card">
+                    <div class="icon">🔄</div>
+                    <h4>Update Real-time</h4>
+                    <p>Bracket otomatis sync dengan Challonge dan refresh setiap 60 detik</p>
+                </div>
+            </div>
+
+            <!-- How to Follow -->
+            <div class="bracket-embed-container" style="margin-top: 40px;">
+                <h3><i class="fas fa-info-circle"></i> Cara Mengikuti Tournament</h3>
+                <div style="color: var(--text-gray); line-height: 1.8;">
+                    <p><strong style="color: var(--primary-gold);">1. Cek Jadwal</strong> - Lihat bracket untuk
+                        mengetahui jadwal pertandingan tim kamu</p>
+                    <p><strong style="color: var(--primary-gold);">2. Check-in</strong> - Lakukan check-in di grup
+                        WhatsApp 15 menit sebelum jadwal main</p>
+                    <p><strong style="color: var(--primary-gold);">3. Siap Bertanding</strong> - Masuk ke room custom
+                        match yang dibuat panitia</p>
+                    <p><strong style="color: var(--primary-gold);">4. Laporkan Hasil</strong> - Screenshot hasil dan
+                        kirim ke panitia</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>UEST MLBB CUP 4#</h3>
+                    <p>Tournament Mobile Legends: Bang Bang yang diselenggarakan oleh BEM FTIS UNHI untuk siswa SMA/SMK
+                        dan umum.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="acara.html">Info Acara</a></li>
+                        <li><a href="pendaftaran.html">Pendaftaran</a></li>
+                        <li><a href="bracket.html">Bracket</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> bem@kampus.ac.id</li>
+                        <li><i class="fab fa-whatsapp"></i> 0812-3456-7890</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Kampus Kita</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 MLBB CUP - BEM. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    
+    <!-- Auto Refresh Bracket Script -->
+    <script>
+        // Konfigurasi refresh (dalam detik)
+        const REFRESH_INTERVAL = 30; // refresh setiap 60 detik
+        let countdown = REFRESH_INTERVAL;
+        let refreshInterval;
+        let countdownInterval;
+        
+        // Fungsi untuk refresh iframe
+        function refreshBracket() {
+            const iframe = document.getElementById('challongeFrame');
+            const icon = document.getElementById('refreshIcon');
+            
+            // Animasi icon
+            icon.classList.add('fa-spin');
+            
+            // Reload iframe
+            iframe.src = iframe.src;
+            
+            // Reset countdown
+            countdown = REFRESH_INTERVAL;
+            updateTimerDisplay();
+            
+            // Stop animasi setelah 1 detik
+            setTimeout(() => {
+                icon.classList.remove('fa-spin');
+            }, 1000);
+        }
+        
+        // Update tampilan timer
+        function updateTimerDisplay() {
+            document.getElementById('refreshTimer').textContent = countdown;
+        }
+        
+        // Countdown timer
+        function startCountdown() {
+            countdownInterval = setInterval(() => {
+                countdown--;
+                updateTimerDisplay();
+                
+                if (countdown <= 0) {
+                    refreshBracket();
+                }
+            }, 1000);
+        }
+        
+        // Start auto refresh saat halaman load
+        document.addEventListener('DOMContentLoaded', function() {
+            startCountdown();
+        });
+        
+        // Pause refresh saat tab tidak aktif (hemat bandwidth)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                clearInterval(countdownInterval);
+            } else {
+                // Resume dan langsung refresh kalau sudah lama tidak aktif
+                if (countdown <= 0) {
+                    refreshBracket();
+                }
+                startCountdown();
+            }
+        });
+    </script>
+</body>
+
+</html>

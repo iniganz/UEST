@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran - UEST MLBB CUP 4# | Rise of the Next Champion</title>
+    <meta name="description" content="Daftarkan tim MLBB kamu untuk mengikuti UEST MLBB CUP 4# - Rise of the Next Champion. Biaya Rp50.000/tim">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* Payment Modal Styles */
+        .payment-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .payment-modal-overlay.active {
+            display: flex;
+        }
+        
+        .payment-modal {
+            background: var(--dark-card);
+            border: 1px solid var(--primary-gold);
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            color: var(--primary-gold);
+        }
+        
+        .modal-header {
+            text-align: center;
+            padding: 30px 30px 20px;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .modal-header h2 {
+            color: var(--primary-gold);
+            margin-bottom: 10px;
+        }
+        
+        .modal-header p {
+            color: var(--text-gray);
+        }
+        
+        .modal-body {
+            padding: 25px 30px;
+        }
+        
+        .modal-body h3 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .payment-amount {
+            background: linear-gradient(135deg, var(--primary-gold), #d4940f);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .payment-amount span {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-bg);
+        }
+        
+        .payment-qr {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .payment-qr img {
+            max-width: 200px;
+            width: 100%;
+            height: auto;
+        }
+        
+        .payment-info h4 {
+            color: var(--primary-gold);
+            margin-bottom: 15px;
+        }
+        
+        .bank-info {
+            background: var(--dark-bg);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .bank-info p {
+            margin-bottom: 5px;
+        }
+        
+        .account-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+            letter-spacing: 2px;
+            margin: 10px 0;
+        }
+        
+        .btn-copy {
+            background: transparent;
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-copy:hover {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+        }
+        
+        .payment-note {
+            background: rgba(245, 166, 35, 0.1);
+            border: 1px solid rgba(245, 166, 35, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .payment-note i {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .payment-note ul {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+            color: var(--text-gray);
+        }
+        
+        .payment-note li {
+            margin-bottom: 5px;
+        }
+        
+        .modal-footer {
+            padding: 20px 30px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .modal-footer .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        @media (max-width: 500px) {
+            .payment-modal {
+                margin: 10px;
+            }
+            
+            .modal-header, .modal-body, .modal-footer {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            
+            .payment-amount span {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Mengirim pendaftaran...</p>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="payment-modal-overlay" id="paymentModal">
+        <div class="payment-modal">
+            <button class="modal-close" onclick="closePaymentModal()">&times;</button>
+            
+            <div class="modal-header">
+                <div class="success-icon">✅</div>
+                <h2>Pendaftaran Berhasil!</h2>
+                <p>Tim <strong id="registeredTeamName"></strong> telah terdaftar</p>
+            </div>
+            
+            <div class="modal-body">
+                <h3>💰 Langkah Selanjutnya: Pembayaran</h3>
+                <p style="margin-bottom: 20px;">Lakukan pembayaran biaya pendaftaran sebesar:</p>
+                
+                <div class="payment-amount">
+                    <span>Rp 50.000</span>
+                </div>
+                
+                <div class="payment-qr">
+                    <!-- Ganti dengan QR Code rekening admin -->
+                    <img src="images/qr-payment.png" alt="QR Code Pembayaran" onerror="this.style.display='none'; document.getElementById('qrFallback').style.display='block';">
+                    <div id="qrFallback" style="display: none;">
+                        <p style="color: var(--text-gray); font-size: 0.9rem;">QR Code tidak tersedia</p>
+                    </div>
+                </div>
+                
+                <div class="payment-info">
+                    <h4>Transfer ke Rekening:</h4>
+                    <div class="bank-info">
+                        <p><strong>Bank BCA</strong></p>
+                        <p class="account-number" id="accountNumber">1234567890</p>
+                        <p>a.n. <strong>Nama Admin BEM</strong></p>
+                        <button class="btn-copy" onclick="copyAccountNumber()">
+                            <i class="fas fa-copy"></i> Salin Nomor Rekening
+                        </button>
+                    </div>
+                    
+                    <div class="payment-note">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <p><strong>Penting:</strong></p>
+                            <ul>
+                                <li>Screenshot bukti transfer</li>
+                                <li>Kirim bukti ke WhatsApp: <strong>0812-3456-7890</strong></li>
+                                <li>Format: <em>NamaTim_BuktiTf</em></li>
+                                <li>Pembayaran maksimal <strong>1x24 jam</strong> setelah pendaftaran</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <a href="https://wa.me/6281234567890?text=Halo%20admin,%20saya%20sudah%20daftar%20UEST%20MLBB%20CUP%204%23%20dengan%20nama%20tim:%20" id="waPaymentLink" class="btn btn-primary" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Konfirmasi via WhatsApp
+                </a>
+                <button class="btn btn-secondary" onclick="closePaymentModal()">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-logo">
+                <img src="images/logo.png" alt="Logo" onerror="this.style.display='none'">
+                <h1>UEST MLBB CUP 4#</h1>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="acara.html">Acara</a></li>
+                <li><a href="pendaftaran.html" class="active">Pendaftaran</a></li>
+                <li><a href="bracket.html">Bracket</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="hero" style="min-height: 40vh;">
+        <div class="hero-content">
+            <span class="hero-badge">📝 Open Registration | 32 Slot Tim</span>
+            <h1>Form <span class="highlight">Pendaftaran</span></h1>
+            <p class="hero-subtitle">Rise of the Next Champion</p>
+            <div style="margin-top: 20px; padding: 15px; background: rgba(245, 166, 35, 0.15); border-radius: 10px; border: 1px solid var(--primary-gold);">
+                <p style="color: var(--primary-gold); font-size: 1.2rem; font-weight: 600;">💰 Biaya Pendaftaran: Rp50.000/tim</p>
+                <p style="color: var(--text-gray); font-size: 0.9rem; margin-top: 5px;">Pembayaran dilakukan setelah mengisi form</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Form Section -->
+    <section class="section">
+        <div class="container">
+            <!-- Alert Messages -->
+            <div id="alertContainer" style="max-width: 700px; margin: 0 auto 30px;"></div>
+            
+            <div class="form-container">
+                <form id="registrationForm">
+                    <!-- Team Info -->
+                    <h3 style="color: var(--primary-gold); margin-bottom: 25px; font-size: 1.3rem;">
+                        <i class="fas fa-users"></i> Informasi Tim
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label>Nama Tim <span class="required">*</span></label>
+                        <input type="text" class="form-control" name="teamName" placeholder="Contoh: Evos Legends" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Kategori <span class="required">*</span></label>
+                        <select class="form-control" name="category" required>
+                            <option value="">Pilih Kategori</option>
+                            <option value="SMA/SMK">SMA/SMK</option>
+                            <option value="Umum">Umum</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Asal Sekolah/Instansi</label>
+                        <input type="text" class="form-control" name="school" placeholder="Nama sekolah atau instansi">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Logo Tim</label>
+                        <div class="file-upload" id="logoUpload">
+                            <input type="file" name="teamLogo" accept="image/*" id="logoInput">
+                            <div class="upload-icon">📁</div>
+                            <p>Klik atau drag & drop logo tim</p>
+                            <p style="font-size: 0.85rem;">(Format: JPG, PNG. Max: 2MB)</p>
+                            <span class="file-name" id="logoFileName"></span>
+                        </div>
+                    </div>
+
+                    <!-- Captain Info -->
+                    <div class="players-section">
+                        <h3><i class="fas fa-crown"></i> Data Kapten (Contact Person)</h3>
+                        
+                        <div class="form-group">
+                            <label>Nama Lengkap Kapten <span class="required">*</span></label>
+                            <input type="text" class="form-control" name="captainName" placeholder="Nama lengkap" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>No. WhatsApp Kapten <span class="required">*</span></label>
+                            <input type="tel" class="form-control" name="captainPhone" placeholder="08xxxxxxxxxx" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>ID MLBB Kapten <span class="required">*</span></label>
+                            <input type="text" class="form-control" name="captainMLBB" placeholder="ID MLBB (contoh: 123456789)" required>
+                        </div>
+                    </div>
+
+                    <!-- Players -->
+                    <div class="players-section">
+                        <h3><i class="fas fa-gamepad"></i> Data Pemain (5 Pemain Inti)</h3>
+                        
+                        <!-- Player 1 (Captain) -->
+                        <p style="color: var(--text-gray); margin-bottom: 20px; font-size: 0.9rem;">
+                            * Pemain 1 adalah kapten yang sudah diisi di atas
+                        </p>
+                        
+                        <!-- Player 2 -->
+                        <div class="player-row">
+                            <div class="player-number">2</div>
+                            <input type="text" class="form-control" name="player2Name" placeholder="Nama Pemain 2" required>
+                            <input type="text" class="form-control" name="player2MLBB" placeholder="ID MLBB Pemain 2" required>
+                        </div>
+                        
+                        <!-- Player 3 -->
+                        <div class="player-row">
+                            <div class="player-number">3</div>
+                            <input type="text" class="form-control" name="player3Name" placeholder="Nama Pemain 3" required>
+                            <input type="text" class="form-control" name="player3MLBB" placeholder="ID MLBB Pemain 3" required>
+                        </div>
+                        
+                        <!-- Player 4 -->
+                        <div class="player-row">
+                            <div class="player-number">4</div>
+                            <input type="text" class="form-control" name="player4Name" placeholder="Nama Pemain 4" required>
+                            <input type="text" class="form-control" name="player4MLBB" placeholder="ID MLBB Pemain 4" required>
+                        </div>
+                        
+                        <!-- Player 5 -->
+                        <div class="player-row">
+                            <div class="player-number">5</div>
+                            <input type="text" class="form-control" name="player5Name" placeholder="Nama Pemain 5" required>
+                            <input type="text" class="form-control" name="player5MLBB" placeholder="ID MLBB Pemain 5" required>
+                        </div>
+                    </div>
+
+                    <!-- Cadangan (Optional) -->
+                    <div class="players-section">
+                        <h3><i class="fas fa-user-plus"></i> Pemain Cadangan (Opsional)</h3>
+                        
+                        <div class="player-row">
+                            <div class="player-number" style="background: var(--dark-border); color: var(--text-gray);">C</div>
+                            <input type="text" class="form-control" name="subName" placeholder="Nama Pemain Cadangan">
+                            <input type="text" class="form-control" name="subMLBB" placeholder="ID MLBB Cadangan">
+                        </div>
+                    </div>
+
+                    <!-- Agreement -->
+                    <div class="form-group" style="margin-top: 30px;">
+                        <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+                            <input type="checkbox" name="agreement" required style="width: 20px; height: 20px; margin-top: 3px;">
+                            <span style="font-weight: 400; color: var(--text-gray);">
+                                Saya menyetujui <a href="acara.html" style="color: var(--primary-gold);">peraturan tournament</a> dan bersedia mengikuti seluruh rangkaian acara. Data yang saya isi adalah benar dan dapat dipertanggungjawabkan.
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                        <i class="fas fa-paper-plane"></i>
+                        Kirim Pendaftaran
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Info Box -->
+            <div style="max-width: 700px; margin: 40px auto 0;">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle" style="font-size: 1.5rem;"></i>
+                    <div>
+                        <strong>Informasi Penting:</strong><br>
+                        Setelah mendaftar, panitia akan menghubungi kapten via WhatsApp untuk konfirmasi dan pembayaran biaya pendaftaran (jika ada). Pastikan nomor WhatsApp aktif!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>UEST MLBB CUP 4#</h3>
+                    <p>Tournament Mobile Legends: Bang Bang yang diselenggarakan oleh BEM FTIS UNHI untuk siswa SMA/SMK dan umum.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="acara.html">Info Acara</a></li>
+                        <li><a href="pendaftaran.html">Pendaftaran</a></li>
+                        <li><a href="bracket.html">Bracket</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> bem@kampus.ac.id</li>
+                        <li><i class="fab fa-whatsapp"></i> 087820055714</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Kampus Kita</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 MLBB CUP - BEM. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/registration.js"></script>
+    <script>
+        // Payment Modal Functions
+        function showPaymentModal(teamName) {
+            const modal = document.getElementById('paymentModal');
+            const teamNameEl = document.getElementById('registeredTeamName');
+            const waLink = document.getElementById('waPaymentLink');
+            
+            teamNameEl.textContent = teamName;
+            
+            // Update WhatsApp link dengan nama tim
+            const waNumber = '6287820055714'; // Ganti dengan nomor admin
+            const waMessage = encodeURIComponent(`Halo admin, saya sudah daftar UEST MLBB CUP 4# dengan nama tim: ${teamName}. Berikut bukti transfer saya:`);
+            waLink.href = `https://wa.me/${waNumber}?text=${waMessage}`;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function copyAccountNumber() {
+            const accountNumber = document.getElementById('accountNumber').textContent;
+            navigator.clipboard.writeText(accountNumber).then(() => {
+                // Show feedback
+                const btn = document.querySelector('.btn-copy');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+                btn.style.background = 'var(--primary-gold)';
+                btn.style.color = 'var(--dark-bg)';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'transparent';
+                    btn.style.color = 'var(--primary-gold)';
+                }, 2000);
+            }).catch(err => {
+                alert('Nomor Rekening: ' + accountNumber);
+            });
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('paymentModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePaymentModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePaymentModal();
+            }
+        });
+    </script>
+</body>
+</html>

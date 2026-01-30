@@ -1,0 +1,333 @@
+/* ===================================
+   BRACKET SPECIFIC STYLES
+   =================================== */
+
+/* Bracket Container Override */
+.bracket {
+    display: flex;
+    gap: 40px;
+    min-width: max-content;
+    padding: 20px;
+    justify-content: center;
+}
+
+/* Round Styling */
+.bracket-round {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    min-width: 220px;
+    position: relative;
+}
+
+.round-title {
+    font-family: var(--font-title);
+    font-size: 0.85rem;
+    color: var(--primary-gold);
+    text-align: center;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 10px;
+    background: rgba(245, 166, 35, 0.1);
+    border-radius: 8px;
+}
+
+/* Match Container */
+.bracket-match {
+    background: var(--dark-bg);
+    border: 1px solid var(--dark-border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.bracket-match:hover {
+    border-color: var(--primary-blue);
+    transform: scale(1.02);
+}
+
+.bracket-match.clickable::after {
+    content: '✏️';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 0.8rem;
+}
+
+.bracket-match.clickable:hover::after {
+    opacity: 1;
+}
+
+/* Team Row in Bracket */
+.bracket-team {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 10px;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--dark-border);
+    min-height: 45px;
+}
+
+.bracket-team:last-child {
+    border-bottom: none;
+}
+
+.bracket-team.winner {
+    background: rgba(245, 166, 35, 0.15);
+}
+
+.bracket-team.loser {
+    opacity: 0.5;
+}
+
+/* Team Logo */
+.bracket-team .team-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--dark-border);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.bracket-team .team-logo.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+/* Team Name */
+.bracket-team .team-name {
+    flex: 1;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-light);
+}
+
+.bracket-team.winner .team-name {
+    color: var(--primary-gold);
+    font-weight: 600;
+}
+
+.bracket-team.empty .team-name {
+    color: var(--text-gray);
+    font-style: italic;
+}
+
+/* Team Score */
+.bracket-team .team-score {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-gray);
+    min-width: 25px;
+    text-align: center;
+    padding: 3px 8px;
+    background: var(--dark-card);
+    border-radius: 5px;
+}
+
+.bracket-team.winner .team-score {
+    color: var(--dark-bg);
+    background: var(--primary-gold);
+}
+
+/* Connector Lines */
+.bracket-round:not(:last-child) .bracket-match::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    width: 20px;
+    height: 2px;
+    background: var(--dark-border);
+}
+
+/* Match Number Badge */
+.match-number {
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    background: var(--primary-blue);
+    color: var(--dark-bg);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+/* Finals Styling */
+.bracket-round.finals .bracket-match {
+    border-color: var(--primary-gold);
+    box-shadow: 0 0 20px rgba(245, 166, 35, 0.2);
+}
+
+.bracket-round.finals .round-title {
+    background: var(--gradient-gold);
+    color: var(--dark-bg);
+}
+
+/* Champion Display */
+.champion-display {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(180deg, rgba(245, 166, 35, 0.2) 0%, transparent 100%);
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
+.champion-display .trophy {
+    font-size: 4rem;
+    margin-bottom: 15px;
+}
+
+.champion-display h3 {
+    font-family: var(--font-title);
+    font-size: 1.5rem;
+    color: var(--primary-gold);
+    margin-bottom: 10px;
+}
+
+.champion-display .champion-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-white);
+}
+
+/* Team List in Admin */
+.team-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 5px;
+}
+
+.team-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--dark-bg);
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--dark-border);
+    transition: all 0.2s ease;
+}
+
+.team-item:hover {
+    border-color: var(--primary-gold);
+}
+
+.team-item .team-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--gradient-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--dark-bg);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.team-item .team-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.team-item .team-info h4 {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.team-item .btn-remove {
+    background: rgba(255, 71, 87, 0.2);
+    color: #ff4757;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.team-item .btn-remove:hover {
+    background: #ff4757;
+    color: white;
+}
+
+/* Responsive Bracket */
+@media (max-width: 992px) {
+    .bracket {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    
+    .bracket-round {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .bracket-round:not(:last-child) .bracket-match::after {
+        display: none;
+    }
+}
+
+/* Scrollbar Styling */
+.team-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.team-list::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+    border-radius: 3px;
+}
+
+.team-list::-webkit-scrollbar-thumb {
+    background: var(--dark-border);
+    border-radius: 3px;
+}
+
+.team-list::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-gold);
+}
+
+/* Empty State */
+.bracket-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-gray);
+}
+
+.bracket-empty i {
+    font-size: 4rem;
+    color: var(--primary-gold);
+    margin-bottom: 20px;
+    display: block;
+}
+
+.bracket-empty h3 {
+    margin-bottom: 10px;
+    color: var(--text-light);
+}

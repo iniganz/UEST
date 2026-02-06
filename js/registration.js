@@ -19,49 +19,113 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoInput = document.getElementById('logoInput');
     const logoFileName = document.getElementById('logoFileName');
     const logoUpload = document.getElementById('logoUpload');
-    
+    const logoPreview = document.getElementById('logoPreview');
+    const logoPreviewImg = document.getElementById('logoPreviewImg');
+    const removeLogoBtn = document.getElementById('removeLogoBtn');
+
     if (logoInput) {
+        // Helper to show preview
+        const showPreview = (file) => {
+            if (!file) return;
+            const url = URL.createObjectURL(file);
+            logoPreviewImg.src = url;
+            logoPreview.style.display = 'block';
+            logoFileName.textContent = file.name;
+            logoUpload.style.borderColor = 'var(--primary-gold)';
+        };
+
+        // Clear preview
+        const clearPreview = () => {
+            logoInput.value = '';
+            logoFileName.textContent = '';
+            if (logoPreviewImg) {
+                logoPreviewImg.src = '';
+            }
+            if (logoPreview) {
+                logoPreview.style.display = 'none';
+            }
+        };
+
         logoInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 // Validate file size (max 2MB)
                 if (file.size > 2 * 1024 * 1024) {
                     showAlert('Ukuran file terlalu besar! Maksimal 2MB', 'error');
-                    logoInput.value = '';
-                    logoFileName.textContent = '';
+                    clearPreview();
                     return;
                 }
-                
+
                 // Validate file type
                 if (!file.type.startsWith('image/')) {
                     showAlert('File harus berupa gambar (JPG, PNG)', 'error');
-                    logoInput.value = '';
-                    logoFileName.textContent = '';
+                    clearPreview();
                     return;
                 }
-                
-                logoFileName.textContent = file.name;
-                logoUpload.style.borderColor = 'var(--primary-gold)';
+
+                showPreview(file);
+            } else {
+                clearPreview();
             }
         });
-        
-        // Drag and drop styling
+
+        // Drag and drop styling & handling
         logoUpload.addEventListener('dragover', function(e) {
             e.preventDefault();
             this.style.borderColor = 'var(--primary-gold)';
             this.style.background = 'rgba(245, 166, 35, 0.05)';
         });
-        
+
         logoUpload.addEventListener('dragleave', function(e) {
             e.preventDefault();
             this.style.borderColor = 'var(--dark-border)';
             this.style.background = 'var(--dark-bg)';
         });
-        
+
         logoUpload.addEventListener('drop', function(e) {
+            e.preventDefault();
             this.style.borderColor = 'var(--dark-border)';
             this.style.background = 'var(--dark-bg)';
+
+            const files = e.dataTransfer.files;
+            if (files && files.length) {
+                const file = files[0];
+                // Create a DataTransfer to assign to input.files (if supported)
+                try {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    logoInput.files = dt.files;
+                } catch (err) {
+                    // Fallback: cannot set files programmatically in some browsers
+                    // We'll still process the file directly
+                }
+
+                // Trigger same validation and preview
+                if (file.size > 2 * 1024 * 1024) {
+                    showAlert('Ukuran file terlalu besar! Maksimal 2MB', 'error');
+                    clearPreview();
+                    return;
+                }
+                if (!file.type.startsWith('image/')) {
+                    showAlert('File harus berupa gambar (JPG, PNG)', 'error');
+                    clearPreview();
+                    return;
+                }
+                showPreview(file);
+            }
         });
+
+        // Remove button
+        if (removeLogoBtn) {
+            removeLogoBtn.addEventListener('click', function() {
+                if (confirm('Hapus logo yang dipilih?')) {
+                    if (logoPreviewImg && logoPreviewImg.src) {
+                        URL.revokeObjectURL(logoPreviewImg.src);
+                    }
+                    clearPreview();
+                }
+            });
+        }
     }
 });
 
@@ -110,9 +174,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     showAlert('🎉 Pendaftaran berhasil! Tim kamu telah terdaftar. Panitia akan menghubungi via WhatsApp.', 'success');
                 }
                 
-                // Reset form
+                // Reset form and clear preview
                 form.reset();
                 document.getElementById('logoFileName').textContent = '';
+                const logoPreviewImg = document.getElementById('logoPreviewImg');
+                const logoPreview = document.getElementById('logoPreview');
+                if (logoPreviewImg && logoPreviewImg.src) {
+                    try { URL.revokeObjectURL(logoPreviewImg.src); } catch(e) {}
+                    logoPreviewImg.src = '';
+                }
+                if (logoPreview) logoPreview.style.display = 'none';
                 
                 // Scroll to top
                 window.scrollTo({ top: 0, behavior: 'smooth' });

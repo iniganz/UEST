@@ -228,7 +228,7 @@
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <p>Mengirim pendaftaran...</p>
+        <p>Mohon Tunggu Sampai Selesai <br> Mengirim pendaftaran...</p>
     </div>
 
     <!-- Payment Modal -->
@@ -250,20 +250,20 @@
                     <span>Rp 50.000</span>
                 </div>
                 
-                <div class="payment-qr">
-                    <!-- Ganti dengan QR Code rekening admin -->
+                <!-- Ganti dengan QR Code rekening admin -->
+                <!-- <div class="payment-qr">
                     <img src="images/qr-payment.png" alt="QR Code Pembayaran" onerror="this.style.display='none'; document.getElementById('qrFallback').style.display='block';">
                     <div id="qrFallback" style="display: none;">
                         <p style="color: var(--text-gray); font-size: 0.9rem;">QR Code tidak tersedia</p>
                     </div>
-                </div>
+                </div> -->
                 
                 <div class="payment-info">
                     <h4>Transfer ke Rekening:</h4>
                     <div class="bank-info">
                         <p><strong>Bank BCA</strong></p>
-                        <p class="account-number" id="accountNumber">1234567890</p>
-                        <p>a.n. <strong>Nama Admin BEM</strong></p>
+                        <p class="account-number" id="accountNumber">7724065024</p>
+                        <p>a.n. <strong>ANAK AGUNG NGURAH ANDIKA PRADNYANA</strong></p>
                         <button class="btn-copy" onclick="copyAccountNumber()">
                             <i class="fas fa-copy"></i> Salin Nomor Rekening
                         </button>
@@ -275,7 +275,7 @@
                             <p><strong>Penting:</strong></p>
                             <ul>
                                 <li>Screenshot bukti transfer</li>
-                                <li>Kirim bukti ke WhatsApp: <strong>0812-3456-7890</strong></li>
+                                <li>Kirim bukti ke WhatsApp: <strong>0878-2005-5714</strong></li>
                                 <li>Format: <em>NamaTim_BuktiTf</em></li>
                                 <li>Pembayaran maksimal <strong>1x24 jam</strong> setelah pendaftaran</li>
                             </ul>
@@ -285,7 +285,7 @@
             </div>
             
             <div class="modal-footer">
-                <a href="https://wa.me/6281234567890?text=Halo%20admin,%20saya%20sudah%20daftar%20UEST%20MLBB%20CUP%204%23%20dengan%20nama%20tim:%20" id="waPaymentLink" class="btn btn-primary" target="_blank">
+                <a href="https://wa.me/6287820055714?text=Halo%20admin,%20saya%20sudah%20daftar%20UEST%20MLBB%20CUP%204%23%20dengan%20nama%20tim:%20" id="waPaymentLink" class="btn btn-primary" target="_blank">
                     <i class="fab fa-whatsapp"></i> Konfirmasi via WhatsApp
                 </a>
                 <button class="btn btn-secondary" onclick="closePaymentModal()">
@@ -369,6 +369,13 @@
                             <p>Klik atau drag & drop logo tim</p>
                             <p style="font-size: 0.85rem;">(Format: JPG, PNG. Max: 2MB)</p>
                             <span class="file-name" id="logoFileName"></span>
+                            <!-- Preview image -->
+                            <div id="logoPreview" class="logo-preview" style="display:none; margin-top:12px; text-align:center;">
+                                <img id="logoPreviewImg" alt="Preview Logo" style="max-width:160px; max-height:160px; border-radius:8px; border:1px solid var(--dark-border); object-fit:contain; background: #fff; padding:6px;" />
+                                <div style="margin-top:8px;">
+                                    <button type="button" class="btn btn-secondary" id="removeLogoBtn" style="padding:6px 12px; font-size:0.9rem;">Hapus</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

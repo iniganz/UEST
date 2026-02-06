@@ -1183,3 +1183,18 @@ select.form-control {
         padding: 30px 20px;
     }
 }
+
+
+/* image hero */
+.imgHero {
+  width: 100%;
+  padding-bottom: 45px;
+  padding-top: 45px;
+  filter: drop-shadow(2px 12px 12px var(--primary-gold));
+  -webkit-filter: drop-shadow(2px 12px 12px var(--primary-gold));
+}
+.imgNav {
+    filter: drop-shadow(2px 2px 2px var(--primary-gold));
+    -webkit-filter: drop-shadow(2px 2px 2px var(--primary-gold));
+}
+

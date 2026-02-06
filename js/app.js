@@ -11,12 +11,40 @@
     // ===================================
     const CONFIG = {
         enableProtection: true,
-        warningMessage: '⚠️ PERINGATAN!\n\nAnda tidak diizinkan untuk melakukan inspect element atau membuka Developer Tools pada website ini.\n\nTindakan ini tercatat oleh sistem.',
-        redirectOnDetect: false, // Set true jika mau redirect
+        modalRespawnDelay: 3000, // 3 detik sebelum modal muncul lagi
+        redirectOnDetect: false,
         redirectUrl: 'https://google.com'
     };
 
     if (!CONFIG.enableProtection) return;
+
+    // ===================================
+    // INJECT PROTECTION STYLES (sekali saja)
+    // ===================================
+    const protectionStyle = document.createElement('style');
+    protectionStyle.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Blur seluruh konten halaman saat DevTools terbuka */
+        body.devtools-open > *:not(#devtoolsWarningModal):not(#antiInspectToast):not(script) {
+            filter: blur(8px) !important;
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+        }
+    `;
+    document.head.appendChild(protectionStyle);
 
     // ===================================
     // 1. DISABLE RIGHT CLICK
@@ -91,6 +119,7 @@
     // 3. DETECT DEVTOOLS OPEN
     // ===================================
     let devtoolsOpen = false;
+    let modalRespawnTimer = null;
 
     // Method 1: Check window size difference
     const checkDevTools = function() {
@@ -103,7 +132,13 @@
                 onDevToolsOpen();
             }
         } else {
-            devtoolsOpen = false;
+            if (devtoolsOpen) {
+                // DevTools baru ditutup - bersihkan semua
+                devtoolsOpen = false;
+                clearModalRespawn();
+                removeWarningModal();
+                document.body.classList.remove('devtools-open');
+            }
         }
     };
 
@@ -112,7 +147,6 @@
         const start = performance.now();
         debugger;
         const end = performance.now();
-        
         if (end - start > 100) {
             onDevToolsOpen();
         }
@@ -133,10 +167,13 @@
     // 4. ON DEVTOOLS DETECTED
     // ===================================
     function onDevToolsOpen() {
+        // Blur seluruh halaman
+        document.body.classList.add('devtools-open');
+
         // Show warning modal
         showWarningModal();
         
-        // Optional: Clear console
+        // Clear console
         console.clear();
         
         // Console warning
@@ -154,11 +191,9 @@
     // 5. WARNING TOAST
     // ===================================
     function showWarning(message) {
-        // Remove existing toast
         const existingToast = document.getElementById('antiInspectToast');
         if (existingToast) existingToast.remove();
 
-        // Create toast
         const toast = document.createElement('div');
         toast.id = 'antiInspectToast';
         toast.innerHTML = `
@@ -183,26 +218,11 @@
                 <span>${message}</span>
             </div>
         `;
-
-        // Add animation style
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-
         document.body.appendChild(toast);
 
-        // Remove after 3 seconds
         setTimeout(() => {
-            toast.querySelector('div').style.animation = 'slideOut 0.3s ease forwards';
+            const inner = toast.querySelector('div');
+            if (inner) inner.style.animation = 'slideOut 0.3s ease forwards';
             setTimeout(() => toast.remove(), 300);
         }, 3000);
     }
@@ -211,7 +231,7 @@
     // 6. WARNING MODAL (For DevTools Detection)
     // ===================================
     function showWarningModal() {
-        // Check if modal already exists
+        // Jangan buat duplikat
         if (document.getElementById('devtoolsWarningModal')) return;
 
         const modal = document.createElement('div');
@@ -255,7 +275,7 @@
                         <strong style="color: #ff4757;">Tindakan ini tidak diizinkan!</strong><br><br>
                         Silakan tutup Developer Tools untuk melanjutkan.
                     </p>
-                    <button onclick="this.closest('#devtoolsWarningModal').remove()" style="
+                    <button id="devtoolsAckBtn" style="
                         background: linear-gradient(135deg, #f5a623, #f7c56e);
                         color: #0a0a0f;
                         border: none;
@@ -265,36 +285,68 @@
                         font-size: 1rem;
                         cursor: pointer;
                         transition: transform 0.3s ease;
-                    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    ">
                         MENGERTI
                     </button>
+                    <p id="devtoolsCountdown" style="
+                        color: #ff4757;
+                        font-size: 0.85rem;
+                        margin-top: 15px;
+                        display: none;
+                    "></p>
                 </div>
             </div>
         `;
-
-        // Add modal animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes modalPop {
-                from { transform: scale(0.8); opacity: 0; }
-                to { transform: scale(1); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
-
         document.body.appendChild(modal);
+
+        // Klik MENGERTI: tutup modal, tapi kalau DevTools masih buka → muncul lagi 3 detik
+        const ackBtn = document.getElementById('devtoolsAckBtn');
+        if (ackBtn) {
+            ackBtn.addEventListener('click', handleAcknowledge);
+            ackBtn.addEventListener('mouseover', function() { this.style.transform = 'scale(1.05)'; });
+            ackBtn.addEventListener('mouseout', function() { this.style.transform = 'scale(1)'; });
+        }
+    }
+
+    function removeWarningModal() {
+        const modal = document.getElementById('devtoolsWarningModal');
+        if (modal) modal.remove();
+    }
+
+    function clearModalRespawn() {
+        if (modalRespawnTimer) {
+            clearTimeout(modalRespawnTimer);
+            modalRespawnTimer = null;
+        }
+    }
+
+    function handleAcknowledge() {
+        // Hapus modal saat ini
+        removeWarningModal();
+
+        // Jika DevTools masih terbuka, jadwalkan modal muncul lagi setelah 3 detik
+        if (devtoolsOpen) {
+            showWarning('Developer Tools masih terbuka! Peringatan akan muncul lagi...');
+
+            clearModalRespawn();
+            modalRespawnTimer = setTimeout(function() {
+                if (devtoolsOpen) {
+                    showWarningModal();
+                }
+            }, CONFIG.modalRespawnDelay);
+        } else {
+            // DevTools sudah ditutup, bersihkan blur
+            document.body.classList.remove('devtools-open');
+        }
     }
 
     // ===================================
     // 7. DISABLE TEXT SELECTION (Optional)
     // ===================================
     document.addEventListener('selectstart', function(e) {
-        // Allow selection on input and textarea
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
             return true;
         }
-        // Uncomment line below to disable text selection
-        // e.preventDefault();
     });
 
     // ===================================

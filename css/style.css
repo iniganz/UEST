@@ -3,9 +3,6 @@
    Tema: Dark dengan aksen Gold & Blue (MLBB Style)
    =================================== */
 
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
-
 /* CSS Variables / Root */
 :root {
     --primary-gold: #f5a623;
@@ -183,7 +180,7 @@ img {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('../images/hero-bg.jpg') center/cover no-repeat;
+    background: url('/images/logo.png') center/cover no-repeat;
     opacity: 0.3;
     z-index: 0;
 }

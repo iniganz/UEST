@@ -54,7 +54,7 @@
     // --- Audio ---
     function setupAudio() {
         audio = document.createElement('audio');
-        audio.preload = 'auto';
+        audio.preload = 'none';
         audio.volume = VOLUME;
         document.body.appendChild(audio);
 

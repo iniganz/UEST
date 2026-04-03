@@ -9,7 +9,7 @@
 
 // PENTING: Ganti URL ini dengan URL Web App Google Apps Script kamu
 // Lihat panduan di file SETUP_GOOGLE_SHEETS.md
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3JMFtr2hZpAngDUgjA7EsSSsKwlBPlP0Yx0xgaqcq8aQwcODDkKai6mCZscMWddvFtw/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwdFuEc2HAY3B0JHjBsGgyNgD6-KrNnIdwMsDNvrMDvdNLw2e3qtscDAJwjvsbOS4GjwQ/exec';
 
 // ===================================
 // FILE UPLOAD PREVIEW
@@ -140,35 +140,49 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            console.log('📝 Form submitted, validating...');
+            
             // Validate form
             if (!validateForm()) {
+                console.log('❌ Form validation failed');
                 return;
             }
+            
+            console.log('✅ Form validation passed');
             
             // Show loading
             showLoading(true);
             
             try {
                 // Collect form data
+                console.log('📦 Collecting form data...');
                 const formData = collectFormData();
+                console.log('✅ Form data collected:', Object.keys(formData));
                 
                 // Handle logo upload if exists
                 const logoFile = document.getElementById('logoInput').files[0];
                 if (logoFile) {
+                    console.log(`🖼️ Logo file detected: ${logoFile.name}`);
                     // Convert to base64 for sending
                     formData.logoBase64 = await fileToBase64(logoFile);
                     formData.logoFileName = logoFile.name;
                     formData.logoMimeType = logoFile.type;
+                    console.log(`✅ Logo converted to base64`);
+                } else {
+                    console.log('ℹ️ No logo file selected');
                 }
                 
                 // Send to Google Sheets
+                console.log('📤 Submitting to Google Sheets...');
                 await submitToGoogleSheets(formData);
+                console.log('✅ Submission complete');
                 
                 // Success
                 showLoading(false);
                 
                 // Show payment modal with team name
                 if (typeof showPaymentModal === 'function') {
+                    console.log('💳 Showing payment modal');
                     showPaymentModal(formData.teamName);
                 } else {
                     showAlert('🎉 Pendaftaran berhasil! Tim kamu telah terdaftar. Panitia akan menghubungi via WhatsApp.', 'success');
@@ -190,8 +204,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 
             } catch (error) {
                 showLoading(false);
-                console.error('Submission error:', error);
-                showAlert('Gagal mengirim pendaftaran. Silakan coba lagi atau hubungi panitia.', 'error');
+                console.error('❌ Submission error:', error);
+                console.error('Error message:', error.message);
+                console.error('Error stack:', error.stack);
+                showAlert('Gagal mengirim pendaftaran. Silakan coba lagi atau hubungi panitia. (Check browser console untuk detail)', 'error');
             }
         });
     }
@@ -279,10 +295,28 @@ function collectFormData() {
  */
 function fileToBase64(file) {
     return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = error => reject(error);
+        try {
+            console.log(`🖼️ Converting file to base64: ${file.name} (${file.size} bytes, ${file.type})`);
+            
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            
+            reader.onload = () => {
+                const base64String = reader.result.split(',')[1];
+                const sizeKB = Math.round(base64String.length * 0.75 / 1024);
+                console.log(`✅ Base64 conversion done: ~${sizeKB} KB`);
+                resolve(base64String);
+            };
+            
+            reader.onerror = error => {
+                console.error('❌ FileReader error:', error);
+                reject(error);
+            };
+            
+        } catch (error) {
+            console.error('❌ File conversion error:', error);
+            reject(error);
+        }
     });
 }
 
@@ -312,21 +346,40 @@ async function submitToGoogleSheets(data) {
         return;
     }
     
-    // Real submission to Google Apps Script
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors', // Required for Google Apps Script
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    });
-    
-    // Note: With no-cors mode, we can't read the response
-    // The request will be sent but we won't know if it succeeded
-    // Google Apps Script should handle the data saving
-    
-    return true;
+    try {
+        // Log data being sent
+        console.log('📤 Mengirim data ke Google Apps Script...');
+        console.log('URL:', GOOGLE_SCRIPT_URL);
+        console.log('Data keys:', Object.keys(data));
+        if (data.logoBase64) {
+            console.log('Logo size:', `${Math.round(data.logoBase64.length * 0.75 / 1024)} KB`);
+        }
+        
+        // Real submission to Google Apps Script
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Required for Google Apps Script
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        console.log('✅ Request terkirim ke Google Apps Script');
+        console.log('Response status:', response.status);
+        
+        // Note: With no-cors mode, we can't read the response
+        // The request will be sent but we won't know if it succeeded
+        // Google Apps Script should handle the data saving
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ Fetch error:', error);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        throw error;
+    }
 }
 
 // ===================================

@@ -108,27 +108,55 @@ function checkFolderAccess() {
  */
 function saveToSheet(data) {
   try {
+    const payload = data || {};
+    const requiredFields = [
+      'teamName',
+      'category',
+      'captainName',
+      'captainPhone',
+      'captainMLBB',
+      'player2Name',
+      'player2MLBB',
+      'player3Name',
+      'player3MLBB',
+      'player4Name',
+      'player4MLBB',
+      'player5Name',
+      'player5MLBB'
+    ];
+    const missingFields = requiredFields.filter((field) => !payload[field]);
+
+    if (missingFields.length > 0) {
+      throw new Error(`Data pendaftaran tidak lengkap. Field wajib kosong: ${missingFields.join(', ')}`);
+    }
+
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = ss.getSheetByName(SHEET_NAME);
     
     const row = [
-      data.timestamp || new Date().toLocaleString('id-ID'),
-      data.teamName,
-      data.category,
-      data.school || '-',
-      data.captainName,
-      data.captainPhone,
-      data.captainMLBB,
-      data.player2Name,
-      data.player2MLBB,
-      data.player3Name,
-      data.player3MLBB,
-      data.player4Name,
-      data.player4MLBB,
-      data.player5Name,
-      data.player5MLBB,
-      data.subName || '-',
-      data.subMLBB || '-',
+      payload.timestamp || new Date().toLocaleString('id-ID'),
+      payload.teamName,
+      payload.category,
+      payload.school || '-',
+      payload.captainName,
+      payload.captainNickname || '-',
+      payload.captainPhone,
+      payload.captainMLBB,
+      payload.player2Name,
+      payload.player2Nickname || '-',
+      payload.player2MLBB,
+      payload.player3Name,
+      payload.player3Nickname || '-',
+      payload.player3MLBB,
+      payload.player4Name,
+      payload.player4Nickname || '-',
+      payload.player4MLBB,
+      payload.player5Name,
+      payload.player5Nickname || '-',
+      payload.player5MLBB,
+      payload.subName || '-',
+      payload.subNickname || '-',
+      payload.subMLBB || '-',
       '' // Logo URL (akan diupdate nanti)
     ];
     
@@ -233,9 +261,9 @@ function updateLogoUrl(rowNumber, logoUrl) {
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = ss.getSheetByName(SHEET_NAME);
     
-    // Column R (18) = Logo URL
-    log(`🔄 Updating row ${rowNumber}, column 18 (R) with logo URL...`);
-    sheet.getRange(rowNumber, 18).setValue(logoUrl);
+    // Column X (24) = Logo URL
+    log(`🔄 Updating row ${rowNumber}, column 24 (X) with logo URL...`);
+    sheet.getRange(rowNumber, 24).setValue(logoUrl);
     log(`✅ Logo URL updated`);
     
   } catch (error) {
@@ -256,17 +284,23 @@ function testSaveData() {
     category: 'SMA/SMK',
     school: 'SMK Test',
     captainName: 'John Doe',
+    captainNickname: 'CaptainNick',
     captainPhone: '628123456789',
     captainMLBB: '123456789',
     player2Name: 'Player 2',
+    player2Nickname: 'P2Nick',
     player2MLBB: '111111111',
     player3Name: 'Player 3',
+    player3Nickname: 'P3Nick',
     player3MLBB: '222222222',
     player4Name: 'Player 4',
+    player4Nickname: 'P4Nick',
     player4MLBB: '333333333',
     player5Name: 'Player 5',
+    player5Nickname: 'P5Nick',
     player5MLBB: '444444444',
     subName: 'Cadangan',
+    subNickname: 'SubNick',
     subMLBB: '555555555'
   };
   
@@ -297,17 +331,23 @@ function testDoPostManual() {
     category: 'SMA/SMK',
     school: 'SMK Test',
     captainName: 'Captain Test',
+    captainNickname: 'CaptainNick',
     captainPhone: '628123456789',
     captainMLBB: '123456789',
     player2Name: 'Player 2',
+    player2Nickname: 'P2Nick',
     player2MLBB: '111111111',
     player3Name: 'Player 3',
+    player3Nickname: 'P3Nick',
     player3MLBB: '222222222',
     player4Name: 'Player 4',
+    player4Nickname: 'P4Nick',
     player4MLBB: '333333333',
     player5Name: 'Player 5',
+    player5Nickname: 'P5Nick',
     player5MLBB: '444444444',
     subName: 'Cadangan',
+    subNickname: 'SubNick',
     subMLBB: '555555555'
   };
 

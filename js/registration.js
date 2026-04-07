@@ -9,7 +9,7 @@
 
 // PENTING: Ganti URL ini dengan URL Web App Google Apps Script kamu
 // Lihat panduan di file SETUP_GOOGLE_SHEETS.md
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwdFuEc2HAY3B0JHjBsGgyNgD6-KrNnIdwMsDNvrMDvdNLw2e3qtscDAJwjvsbOS4GjwQ/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpRGohB6NurjSN8dum7dMbzEeMFtKGod3EKbEwLwNJKjLq7QbaSWhW994jU6h7kHo/exec';
 
 // ===================================
 // FILE UPLOAD PREVIEW
@@ -267,21 +267,27 @@ function collectFormData() {
         
         // Captain
         captainName: formData.get('captainName'),
+        captainNickname: formData.get('captainNickname'),
         captainPhone: formatPhoneNumber(formData.get('captainPhone')),
         captainMLBB: formData.get('captainMLBB'),
         
         // Players
         player2Name: formData.get('player2Name'),
+        player2Nickname: formData.get('player2Nickname'),
         player2MLBB: formData.get('player2MLBB'),
         player3Name: formData.get('player3Name'),
+        player3Nickname: formData.get('player3Nickname'),
         player3MLBB: formData.get('player3MLBB'),
         player4Name: formData.get('player4Name'),
+        player4Nickname: formData.get('player4Nickname'),
         player4MLBB: formData.get('player4MLBB'),
         player5Name: formData.get('player5Name'),
+        player5Nickname: formData.get('player5Nickname'),
         player5MLBB: formData.get('player5MLBB'),
         
         // Substitute
         subName: formData.get('subName') || '-',
+        subNickname: formData.get('subNickname') || '-',
         subMLBB: formData.get('subMLBB') || '-'
     };
     

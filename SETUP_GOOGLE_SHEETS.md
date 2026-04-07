@@ -19,7 +19,7 @@ Form Website → Google Apps Script → Google Sheets
 4. Buat header di baris pertama (A1 sampai seterusnya):
 
 ```
-Timestamp | Nama Tim | Kategori | Sekolah | Nama Kapten | WA Kapten | ID MLBB Kapten | Player 2 | ID Player 2 | Player 3 | ID Player 3 | Player 4 | ID Player 4 | Player 5 | ID Player 5 | Cadangan | ID Cadangan | Logo URL
+Timestamp | Nama Tim | Kategori | Sekolah | Nama Kapten | Nickname Kapten | WA Kapten | ID MLBB Kapten | Player 2 | Nickname Player 2 | ID Player 2 | Player 3 | Nickname Player 3 | ID Player 3 | Player 4 | Nickname Player 4 | ID Player 4 | Player 5 | Nickname Player 5 | ID Player 5 | Cadangan | Nickname Cadangan | ID Cadangan | Logo URL
 ```
 
 5. Catat **Spreadsheet ID** dari URL:
@@ -89,17 +89,23 @@ function saveToSheet(data) {
     data.category,
     data.school,
     data.captainName,
+    data.captainNickname,
     data.captainPhone,
     data.captainMLBB,
     data.player2Name,
+    data.player2Nickname,
     data.player2MLBB,
     data.player3Name,
+    data.player3Nickname,
     data.player3MLBB,
     data.player4Name,
+    data.player4Nickname,
     data.player4MLBB,
     data.player5Name,
+    data.player5Nickname,
     data.player5MLBB,
     data.subName,
+    data.subNickname,
     data.subMLBB,
     '' // Logo URL (akan diupdate nanti)
   ];
@@ -151,7 +157,7 @@ function updateLogoUrl(teamName, logoUrl) {
   
   for (let i = data.length - 1; i >= 0; i--) {
     if (data[i][1] === teamName) { // Column B = Nama Tim
-      sheet.getRange(i + 1, 18).setValue(logoUrl); // Column R = Logo URL
+      sheet.getRange(i + 1, 24).setValue(logoUrl); // Column X = Logo URL
       break;
     }
   }
@@ -167,17 +173,23 @@ function testPost() {
     category: 'SMA/SMK',
     school: 'Test School',
     captainName: 'Test Captain',
+    captainNickname: 'CaptainNick',
     captainPhone: '628123456789',
     captainMLBB: '123456789',
     player2Name: 'Player 2',
+    player2Nickname: 'P2Nick',
     player2MLBB: '111111111',
     player3Name: 'Player 3',
+    player3Nickname: 'P3Nick',
     player3MLBB: '222222222',
     player4Name: 'Player 4',
+    player4Nickname: 'P4Nick',
     player4MLBB: '333333333',
     player5Name: 'Player 5',
+    player5Nickname: 'P5Nick',
     player5MLBB: '444444444',
     subName: 'Sub',
+    subNickname: 'SubNick',
     subMLBB: '555555555'
   };
   

@@ -655,10 +655,14 @@ select.form-control {
 
 .player-row {
     display: grid;
-    grid-template-columns: auto 1fr 1fr;
+    grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
     gap: 15px;
     align-items: center;
     margin-bottom: 15px;
+}
+
+.player-row .form-control {
+    min-width: 0;
 }
 
 .player-number {
@@ -1162,9 +1166,16 @@ select.form-control {
 
     .player-row {
         grid-template-columns: auto 1fr;
+        gap: 10px 12px;
+        align-items: start;
     }
 
-    .player-row .form-control:last-child {
+    .player-number {
+        grid-row: 1 / span 3;
+        align-self: start;
+    }
+
+    .player-row .form-control {
         grid-column: 2;
     }
 

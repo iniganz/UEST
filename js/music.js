@@ -11,7 +11,8 @@
     var PLAYLIST = [
         { src: 'music/1.mp3', title: 'Radiant Dawn', artist: 'Track I' },
         { src: 'music/2.mp3', title: 'Come Join the Fun', artist: 'Track II' },
-        { src: 'music/3.mp3', title: 'Cloudrise', artist: 'Track III' }
+        { src: 'music/3.mp3', title: 'Cloudrise', artist: 'Track III' },
+        { src: 'music/4.mp3', title: 'Fungue No. 132', artist: 'Track IV' }
     ];
 
     var STORAGE_KEY = 'uest_music';

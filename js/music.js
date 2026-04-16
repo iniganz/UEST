@@ -15,7 +15,7 @@
     ];
 
     var STORAGE_KEY = 'uest_music';
-    var VOLUME = 0.5;
+    var VOLUME = 0.05; // 5% volume, sesuaikan kalau terlalu keras atau pelan
     var audio = null;
     var trackIndex = 0;
     var started = false;

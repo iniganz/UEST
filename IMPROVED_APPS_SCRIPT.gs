@@ -21,18 +21,18 @@ function doPost(e) {
   log('=== REQUEST DITERIMA ===');
   
   try {
-    if (!e || !e.postData || !e.postData.contents) {
+    if (!e) {
       log('⚠️ Request tanpa postData. doPost harus dipanggil lewat Web App (HTTP POST), bukan Run langsung.');
       return ContentService
         .createTextOutput(JSON.stringify({
           success: false,
-          error: 'Invalid request: postData tidak ditemukan.',
+          error: 'Invalid request: event object tidak ditemukan.',
           hint: 'Gunakan URL Web App dengan metode POST, atau jalankan testDoPostManual() untuk simulasi.'
         }))
         .setMimeType(ContentService.MimeType.JSON);
     }
 
-    const data = JSON.parse(e.postData.contents);
+    const data = parseIncomingData(e);
     log(`Team: ${data.teamName}`);
     log(`Logo Ada: ${data.logoBase64 ? 'YA' : 'TIDAK'}`);
     
@@ -77,6 +77,66 @@ function doPost(e) {
       }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+/**
+ * Parse payload dari beberapa format request:
+ * 1) Raw JSON body
+ * 2) x-www-form-urlencoded dengan field `payload` berisi JSON
+ * 3) Query params langsung
+ */
+function parseIncomingData(e) {
+  const postData = (e && e.postData && e.postData.contents) ? e.postData.contents : '';
+  const params = (e && e.parameter) ? e.parameter : {};
+
+  // Format utama dari frontend: payload=<json>
+  if (params.payload) {
+    try {
+      return JSON.parse(params.payload);
+    } catch (error) {
+      throw new Error(`Gagal parse parameter payload JSON: ${error.message}`);
+    }
+  }
+
+  // Fallback: body mentah JSON
+  if (postData) {
+    try {
+      return JSON.parse(postData);
+    } catch (jsonError) {
+      // Fallback: body urlencoded manual
+      try {
+        const parsedMap = {};
+        postData.split('&').forEach(function (pair) {
+          if (!pair) return;
+          const idx = pair.indexOf('=');
+          const rawKey = idx >= 0 ? pair.slice(0, idx) : pair;
+          const rawVal = idx >= 0 ? pair.slice(idx + 1) : '';
+          const key = decodeURIComponent(String(rawKey).replace(/\+/g, ' '));
+          const value = decodeURIComponent(String(rawVal).replace(/\+/g, ' '));
+          parsedMap[key] = value;
+        });
+
+        if (parsedMap.payload) {
+          return JSON.parse(parsedMap.payload);
+        }
+
+        if (Object.keys(parsedMap).length > 0) {
+          return parsedMap;
+        }
+      } catch (formError) {
+        throw new Error(`Gagal parse body request: ${formError.message}`);
+      }
+
+      throw new Error(`Body request tidak valid JSON/urlencoded: ${jsonError.message}`);
+    }
+  }
+
+  // Fallback terakhir: gunakan parameter langsung jika ada
+  if (Object.keys(params).length > 0) {
+    return params;
+  }
+
+  throw new Error('Request kosong: tidak ada postData atau parameter yang bisa diproses.');
 }
 
 /**

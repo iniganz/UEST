@@ -9,7 +9,7 @@
 
 // PENTING: Ganti URL ini dengan URL Web App Google Apps Script kamu
 // Lihat panduan di file SETUP_GOOGLE_SHEETS.md
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpRGohB6NurjSN8dum7dMbzEeMFtKGod3EKbEwLwNJKjLq7QbaSWhW994jU6h7kHo/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_WtMdf8RAT5B9Rwn-CTmnQglsUrJyl8wF9xtWI3kxK4wq2jNpUZDXRSLRZ6PvFr6tIg/exec';
 
 // ===================================
 // FILE UPLOAD PREVIEW
@@ -361,14 +361,18 @@ async function submitToGoogleSheets(data) {
             console.log('Logo size:', `${Math.round(data.logoBase64.length * 0.75 / 1024)} KB`);
         }
         
-        // Real submission to Google Apps Script
+        // Real submission to Google Apps Script.
+        // no-cors works more reliably with URL encoded payload (simple request).
+        const body = new URLSearchParams({
+            payload: JSON.stringify(data),
+            source: 'uest-website',
+            sentAt: new Date().toISOString()
+        });
+
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors', // Required for Google Apps Script
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
+            mode: 'no-cors', // Required for Google Apps Script Web App from static site
+            body
         });
         
         console.log('✅ Request terkirim ke Google Apps Script');

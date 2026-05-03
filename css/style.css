@@ -538,7 +538,7 @@ img {
    FORM STYLES
    =================================== */
 .form-container {
-    max-width: 700px;
+    max-width: 850px;
     margin: 0 auto;
     background: var(--dark-card);
     border: 1px solid var(--dark-border);
